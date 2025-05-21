@@ -1,0 +1,19 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+# Install system packages required for building Rust projects
+sudo apt-get update
+sudo apt-get install -y build-essential pkg-config libssl-dev curl git
+
+# Ensure rustup is installed
+if ! command -v rustup >/dev/null 2>&1; then
+    curl https://sh.rustup.rs -sSf | sh -s -- -y
+    source "$HOME/.cargo/env"
+fi
+
+# Update toolchain and install common components
+rustup update
+rustup component add clippy rustfmt
+
+# Pre-fetch Rust dependencies so later steps can run offline
+cargo fetch --locked
